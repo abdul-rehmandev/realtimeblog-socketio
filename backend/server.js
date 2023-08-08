@@ -122,6 +122,28 @@ app.put('/api/posts/:id', async (req, res) => {
     }
 });
 
+app.delete('/api/posts/:id', async (req, res) => {
+    try {
+        const postId = req.params.id;
+
+        const deletedPost = await BlogPost.findByIdAndDelete(postId);
+
+        if (!deletedPost) {
+            return res.status(404).json({ error: 'Post not found' });
+        }
+
+        io.emit('postChange', {
+            operationType: 'delete',
+            documentKey: { _id: postId },
+        });
+
+        res.json(deletedPost);
+    } catch (error) {
+        console.error('Error deleting blog post:', error);
+        res.status(500).json({ error: 'Failed to delete blog post' });
+    }
+});
+
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

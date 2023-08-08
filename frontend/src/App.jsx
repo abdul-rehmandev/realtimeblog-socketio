@@ -91,6 +91,19 @@ const App = () => {
     }
   };
 
+  const handleDeletePost = async (postId) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/posts/${postId}`, {
+        method: 'DELETE',
+      });
+
+      const deletedPost = await response.json();
+      console.log('Deleted blog post:', deletedPost);
+    } catch (error) {
+      console.error('Error deleting blog post:', error);
+    }
+  };
+
   return (
     <div>
       <h1>Real-time Blog Posts</h1>
@@ -101,6 +114,7 @@ const App = () => {
           <button onClick={() => handleUpdatePost(post._id, { title: 'Updated Title', content: 'Updated Content' })}>
             Update Post
           </button>
+          <button onClick={() => handleDeletePost(post._id)}>Delete Post</button>
           <hr />
         </div>
       ))}
